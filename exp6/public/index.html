@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="display-wrap">
+        <div class="sub-display" id="subDisplay"></div>
+        <div class="display" id="display">0</div>
+      </div>
+
+      <div class="keys">
+        <button class="btn func" data-action="ac">AC</button>
+        <button class="btn func" data-action="c">C</button>
+        <button class="btn op" data-action="/">÷</button>
+        <button class="btn op" data-action="*">×</button>
+
+        <button class="btn num" data-value="7">7</button>
+        <button class="btn num" data-value="8">8</button>
+        <button class="btn num" data-value="9">9</button>
+        <button class="btn op" data-action="-">−</button>
+
+        <button class="btn num" data-value="4">4</button>
+        <button class="btn num" data-value="5">5</button>
+        <button class="btn num" data-value="6">6</button>
+        <button class="btn op" data-action="+">+</button>
+
+        <button class="btn num" data-value="1">1</button>
+        <button class="btn num" data-value="2">2</button>
+        <button class="btn num" data-value="3">3</button>
+        <button class="btn equals" data-action="=" rowspan="2">=</button>
+
+        <button class="btn zero num" data-value="0">0</button>
+        <button class="btn num" data-value=".">.</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const subDisplay = document.getElementById('subDisplay');
+
+    let current = '0';
+    let previous = null;
+    let operator = null;
+    let shouldReset = false;
+    let lastExpression = ''; // stores last completed calculation (e.g. "3 + 4 = 7")
+
+    function updateDisplay() {
+      display.textContent = current;
+      subDisplay.textContent = lastExpression;
+    }
+
+    function inputDigit(d) {
+      if (shouldReset) {
+        current = '0';
+        shouldReset = false;
+      }
+      if (d === '.') {
+        if (!current.includes('.')) current += '.';
+      } else {
+        current = (current === '0') ? d : current + d;
+      }
+      updateDisplay();
+    }
+
+    function clearAll() {
+      current = '0';
+      previous = null;
+      operator = null;
+      shouldReset = false;
+      lastExpression = '';
+      updateDisplay();
+    }
+
+    function backspaceOne() {
+      if (shouldReset) {
+        current = '0';
+        shouldReset = false;
+        updateDisplay();
+        return;
+      }
+      if (current.length === 1 || (current.length === 2 && current.startsWith('-'))) {
+        current = '0';
+      } else {
+        current = current.slice(0, -1);
+      }
+      if (current.endsWith('.')) current = current.slice(0, -1);
+      updateDisplay();
+    }
+
+    function chooseOperator(op) {
+      if (operator && !shouldReset) {
+        compute();
+      }
+      previous = current;
+      operator = op;
+      shouldReset = true;
+    }
+
+    function compute() {
+      if (operator == null || previous == null) return;
+      const a = parseFloat(previous);
+      const b = parseFloat(current);
+      let result;
+      if (Number.isNaN(a) || Number.isNaN(b)) return;
+      switch (operator) {
+        case '+': result = a + b; break;
+        case '-': result = a - b; break;
+        case '*': result = a * b; break;
+        case '/':
+          result = b === 0 ? 'Error' : a / b;
+          break;
+        default: return;
+      }
+      // prepare and store last expression for sub-display
+      const opSymbol = operator === '*' ? '×' : operator === '/' ? '÷' : operator;
+      lastExpression = `${trimNumber(previous)} ${opSymbol} ${trimNumber(current)} = ${trimNumber(String(result))}`;
+      current = String(result);
+      operator = null;
+      previous = null;
+      shouldReset = true;
+      updateDisplay();
+    }
+
+    function trimNumber(str) {
+      // remove trailing zeros from floats like "2.5000" -> "2.5", keep "Error"
+      if (str === 'Error') return 'Error';
+      const n = Number(str);
+      if (Number.isInteger(n)) return String(n);
+      return String(n).replace(/(?:\.0+|(\.\d+?)0+)$/,'$1');
+    }
+
+    document.querySelector('.keys').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      if (btn.classList.contains('num')) {
+        inputDigit(btn.dataset.value);
+        return;
+      }
+
+      if (btn.classList.contains('op')) {
+        chooseOperator(btn.dataset.action);
+        return;
+      }
+
+      const action = btn.dataset.action;
+      if (action === 'ac') {
+        clearAll();
+        return;
+      }
+
+      if (action === 'c') {
+        backspaceOne();
+        return;
+      }
+
+      if (action === '=') {
+        compute();
+        return;
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.key >= '0' && e.key <= '9') || e.key === '.') {
+        inputDigit(e.key);
+      } else if (['+', '-', '*', '/'].includes(e.key)) {
+        chooseOperator(e.key);
+      } else if (e.key === 'Enter' || e.key === '=') {
+        compute();
+      } else if (e.key === 'Backspace') {
+        backspaceOne();
+      } else if (e.key.toLowerCase() === 'a') {
+        clearAll();
+      }
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
