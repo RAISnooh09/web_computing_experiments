@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Bookstore</title>
+    <link rel="stylesheet" href="online book store.css" />
+</head>
+<body>
+    <header>
+        <h1>Online Bookstore</h1>
+    </header>
+    <main class="books-container">
+        <div class="book-card">
+        <img src="wc.jpeg" alt="web computing">
+            <h2>Web Computing</h2>
+            <h3>
+            <p>Price: ₹499</p>
+            <button class="buy-button">Buy</button>
+        </div>
+        <div class="book-card">
+            <img src="dwm.jpeg" alt="DWM">
+            <h2>Dwm</h2>
+            <p>Price: ₹350</p>
+            <button class="buy-button">Buy</button>
+        </div>
+        <div class="book-card">
+    <img src="cn.jpeg" alt="CN">
+            <h2>Computer Network</h2>
+            <p>Price: ₹599</p>
+            <button class="buy-button">Buy</button>
+        </div>
+    </main>
+</body>
+</html>
