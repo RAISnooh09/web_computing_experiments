@@ -1,0 +1,115 @@
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Background with animated gradient */
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(-45deg, #007bff, #00c6ff, #6a11cb, #2575fc);
+  background-size: 400% 400%;
+  animation: gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Login Card */
+.login-container {
+  width: 360px;
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.login-container h2 {
+  margin-bottom: 24px;
+  color: #333;
+  font-size: 22px;
+  text-align: center;
+}
+
+.login-container h2 i {
+  color: #007bff;
+  margin-right: 8px;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label */
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Input with icon */
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  background: #fafafa;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group:focus-within {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.3);
+}
+
+.input-group .icon {
+  padding: 0 12px;
+  color: #007bff;
+  font-size: 16px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+}
+
+/* Button */
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button i {
+  margin-right: 6px;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #0056b3, #0099ff);
+}
