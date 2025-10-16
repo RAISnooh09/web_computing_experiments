@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h2>Exam Page</h2>
+    <p><b>Instruction:</b> Solve any 3 questions from the PDF.</p>
+  </header>
+
+  <!-- Timer -->
+  <div id="timer">Time Left: 01:00:00</div>
+
+  <!-- PDF Viewer -->
+  <section id="pdfSection">
+    <h3>Question Paper</h3>
+    <div id="pdfViewer">
+      <iframe src="/download-pdf" width="100%" height="600px" style="border:1px solid #ccc; border-radius:8px;"></iframe>
+    </div>
+  </section>
+
+  <!-- Answer Submission Form -->
+  <section id="answerSection">
+    <h3>Submit Your Answer</h3>
+    <form id="answerForm">
+      <textarea name="answer" placeholder="Write your answer here..." required></textarea>
+      <button type="submit">Submit Answer</button>
+    </form>
+  </section>
+
+  <!-- Admin Messages -->
+  <section id="messages"></section>
+
+  <!-- JavaScript -->
+  <script>
+    // ===== Timer =====
+    document.addEventListener("DOMContentLoaded", function() {
+      let timeLeft = 60 * 60; // 1 hour in seconds
+      const timerDiv = document.getElementById('timer');
+
+      const countdown = setInterval(() => {
+        if (timeLeft < 0) {
+          clearInterval(countdown);
+          timerDiv.textContent = "Time Left: 00:00:00";
+          alert("Time is over! Please submit your answer.");
+          document.getElementById('answerForm').querySelector('button').disabled = true;
+          return;
+        }
+
+        const hours = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
+        const seconds = String(timeLeft % 60).padStart(2, '0');
+        timerDiv.textContent = `Time Left: ${hours}:${minutes}:${seconds}`;
+        timeLeft--;
+      }, 1000);
+
+      // ===== Submit Answer =====
+      document.getElementById('answerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        clearInterval(countdown);
+        timerDiv.textContent = "Exam Submitted";
+
+        const formData = new FormData(e.target);
+        const studentId = new URLSearchParams(window.location.search).get('studentId') || 'unknown';
+
+        try {
+          const response = await fetch(`/submit?studentId=${studentId}`, { method: 'POST', body: formData });
+          if(response.ok){
+            alert("Your answer has been submitted successfully!");
+            e.target.reset();
+            document.getElementById('answerForm').querySelector('button').disabled = true;
+          } else {
+            alert("Error submitting answer. Try again.");
+          }
+        } catch(err){
+          alert("Network error. Try again.");
+        }
+      };
+
+      // ===== Admin Messages (SSE) =====
+      const evtSource = new EventSource('/events');
+      evtSource.onmessage = (e) => {
+        const msgDiv = document.getElementById('messages');
+        msgDiv.innerHTML += `<p><b>Admin:</b> ${e.data}</p>`;
+      };
+    });
+  </script>
+
+    <!-- All the Best Message -->
+  <div id="allBest">
+    <p>🎉 All the Best! 🎉</p>
+  </div>
+
+</body>
+</html>
